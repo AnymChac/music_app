@@ -1,0 +1,84 @@
+.song-row {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #121212;
+}
+
+.song-row:hover {
+  background-color: #585858;
+}
+
+.song-rank {
+  width: 30px;
+  color: #b3b3b3;
+  font-size: 0.9rem;
+  text-align: right;
+  margin-right: 15px;
+}
+
+.song-cover {
+  width: 50px;       /* Tamaño fijo */
+  height: 50px;
+  border-radius: 4px; /* Bordes ligeramente redondeados */
+  object-fit: cover;  /* Para que la imagen no se estire */
+  margin-right: 15px;
+  background-color: #282828; /* Color de fondo mientras carga */
+}
+
+.song-details {
+  flex-grow: 1;
+}
+
+.song-title-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.song-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: white;
+}
+
+.explicit-badge {
+  background-color: #919191;
+  color: #121212;
+  font-size: 0.7rem;
+  font-weight: bold;
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+
+.song-plays {
+  margin: 2px 0 0 0;
+  font-size: 0.8rem;
+  color: #b3b3b3;
+}
+
+.song-actions {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.save-btn {
+  background: none;
+  border: none;
+  color: #1DB954; /* Verde si está guardado */
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.options-btn {
+  background: none;
+  border: none;
+  color: #b3b3b3;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
