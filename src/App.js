@@ -1,56 +1,37 @@
-import React, { Component } from 'react';
-import Header from './components/Header';
-import Song from './components/Song';
-import './App.css';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Header } from './components/Header/Header.tsx';
+import { Library } from './components/Library/Library.tsx';
+import { AlbumDetails } from './components/AlbumDetails/AlbumDetails.tsx'; // Renombrado
+import { Song } from './components/Song/Song.tsx';
+import { useFetchMusic } from './hooks/useFetchMusic.ts';
 
-// 1. IMPORTA tus imágenes locales
-import imgSincero from './imagen/Enoc.jpeg';
-import imgClaseAzul from './imagen/Cosmo.jpeg';
-import imgSePreparo from './imagen/Odisea.jpeg';
+function App() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const url = searchTerm 
+    ? `https://corsproxy.io/?https://theaudiodb.com/api/v1/json/2/searchalbum.php?s=${encodeURIComponent(searchTerm)}` 
+    : null;
 
-class App extends Component {
-  
-  // Este es el método que solicitaste
-  componentDidMount() {
-    console.log("✅ La aplicación de Biblioteca Musical se ha cargado correctamente.");
-    // Aquí es donde normalmente harías llamadas a una API en el futuro
-  }
+  const { data, loading, error } = useFetchMusic(url);
 
-  render() {
-    return (
-      <div className="App">
-        <Header />
-        
-        <main className="content-body">
-          <h2 className="section-title">Populares</h2>
-          
-          <div className="song-list-container">
-            <Song 
-              numero={1}
-              portadaUrl={imgSincero} 
-              titulo="Sincero" 
-              reproducciones={1333412764}
-              explicito={true}
+  return (
+    <Router>
+      <Header onSearch={(artist) => setSearchTerm(artist)} />
+      <Routes>
+        <Route path="/" element={<Library albums={data?.album || []} title={searchTerm} />} />
+        <Route path="/album/:id" element={<AlbumDetails />} />
+        <Route path="/song/:trackId" element={<Song />} />
+        <Route 
+        path="/" 
+        element={
+            <Library 
+            albums={data?.album || []} 
+            title={searchTerm ? `Resultados para: ${searchTerm}` : "Busca tus artistas favoritos"} 
             />
-            <Song 
-              numero={2}
-              portadaUrl={imgClaseAzul} 
-              titulo="Clase Azul" 
-              reproducciones={1213033272}
-              explicito={false}
-            />
-            <Song 
-              numero={3}
-              portadaUrl={imgSePreparo} 
-              titulo="Se Preparó" 
-              reproducciones={813599926}
-              explicito={false}
-            />
-          </div>
-        </main>
-      </div>
-    );
-  }
+        } 
+        />
+      </Routes>
+    </Router>
+  );
 }
-
 export default App;
