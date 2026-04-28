@@ -1,5 +1,12 @@
 import React from 'react';
 import { SearchResults } from '../SearchResults/SearchResults.tsx';
+// Importamos los estilos desde tu archivo local
+import { 
+  LibraryContainer, 
+  LibraryHeader, 
+  EmptyState, 
+  EmptyMessage 
+} from './styles.ts';
 
 interface LibraryProps {
   albums: any[];
@@ -8,18 +15,20 @@ interface LibraryProps {
 
 export const Library = ({ albums, title = "Mi Biblioteca" }: LibraryProps) => {
   return (
-    <section className="library-container">
-      <header>
+    <LibraryContainer>
+      <LibraryHeader>
         <h2>{title}</h2>
-      </header>
+      </LibraryHeader>
       
       {albums && albums.length > 0 ? (
         <SearchResults albums={albums} />
       ) : (
-        <div className="empty-state">
-          <p>No hay música para mostrar. ¡Inicia una búsqueda!</p>
-        </div>
+        <EmptyState>
+          <EmptyMessage>
+            No hay música para mostrar. ¡Inicia una búsqueda!
+          </EmptyMessage>
+        </EmptyState>
       )}
-    </section>
+    </LibraryContainer>
   );
 };
