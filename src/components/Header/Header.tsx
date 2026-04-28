@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importamos el hook de navegación
+import { useNavigate } from 'react-router-dom';
+// Importamos los componentes estilizados desde tu nuevo archivo de estilos
+import { 
+  HeaderContainer, 
+  Nav, 
+  Logo, 
+  SearchForm, 
+  SearchInput, 
+  SearchButton 
+} from './styles.ts';
 
 interface HeaderProps {
   onSearch: (artist: string) => void;
@@ -7,33 +16,33 @@ interface HeaderProps {
 
 export const Header = ({ onSearch }: HeaderProps) => {
   const [query, setQuery] = useState('');
-  const navigate = useNavigate(); // Inicializamos el navegador
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
-      onSearch(query); // Ejecuta la búsqueda
-      navigate('/');   // ¡ESTA ES LA CLAVE! Redirecciona a la raíz
-      setQuery('');    // Limpia el buscador (opcional)
+      onSearch(query);
+      navigate('/');
+      setQuery('');
     }
   };
 
   return (
-    <header className="main-header">
-      <nav>
-        <h1 onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
+    <HeaderContainer>
+      <Nav>
+        <Logo onClick={() => navigate('/')}>
           MusicApp
-        </h1>
-        <form onSubmit={handleSubmit}>
-          <input 
+        </Logo>
+        <SearchForm onSubmit={handleSubmit}>
+          <SearchInput 
             type="text" 
             placeholder="Buscar artista (ej: Ozuna)..." 
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <button type="submit">Buscar</button>
-        </form>
-      </nav>
-    </header>
+          <SearchButton type="submit">Buscar</SearchButton>
+        </SearchForm>
+      </Nav>
+    </HeaderContainer>
   );
 };

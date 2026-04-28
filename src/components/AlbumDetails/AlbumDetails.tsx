@@ -1,5 +1,17 @@
 import { useParams, Link } from 'react-router-dom';
 import { useFetchMusic } from '../../hooks/useFetchMusic.ts';
+// Importamos los componentes (asegúrate de agregar los que falten en styles.ts)
+import { 
+  DetailsContainer, 
+  AlbumHeader, 
+  AlbumImage, 
+  YearTag, 
+  InfoSection,
+  DescriptionBox,
+  TrackList,
+  TrackItem,
+  StyledLink
+} from './styles.ts';
 
 export const AlbumDetails = () => {
   const { id } = useParams();
@@ -16,73 +28,56 @@ export const AlbumDetails = () => {
   const tracks = dataTracks?.track || [];
 
   return (
-    <div style={{ padding: '20px', maxWidth: '900px', margin: '0 auto' }}>
-      <Link to="/" style={{ display: 'block', marginBottom: '20px' }}>← Volver a la búsqueda</Link>
+    <DetailsContainer>
+      <StyledLink to="/">← Volver a la búsqueda</StyledLink>
       
       {albumInfo && (
-        <div style={{ marginBottom: '40px' }}>
-          <div style={{ display: 'flex', gap: '30px', flexWrap: 'wrap', marginBottom: '20px' }}>
-            <img 
+        <>
+          <AlbumHeader>
+            <AlbumImage 
               src={albumInfo.strAlbumThumb} 
               alt={albumInfo.strAlbum} 
-              style={{ width: '300px', borderRadius: '8px', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }} 
             />
             
-            <div style={{ flex: 1, minWidth: '300px' }}>
+            <InfoSection>
               <h1>{albumInfo.strAlbum}</h1>
               <h2>Artista: {albumInfo.strArtist}</h2>
-              <p><strong>Año:</strong> {albumInfo.intYearReleased}</p>
+              {/* PASO DE PROPS: Evaluamos si es reciente (post 2020) */}
+              <p>
+                <strong>Año:</strong> 
+                <YearTag isRecent={parseInt(albumInfo.intYearReleased) > 2020}>
+                  {albumInfo.intYearReleased}
+                </YearTag>
+              </p>
               <p><strong>Género:</strong> {albumInfo.strGenre || 'N/A'}</p>
               <p><strong>Sello:</strong> {albumInfo.strLabel}</p>
-            </div>
-          </div>
+            </InfoSection>
+          </AlbumHeader>
 
-          {/* NUEVA SECCIÓN: Descripción del álbum */}
           {(albumInfo.strDescriptionES || albumInfo.strDescriptionEN) && (
-            <div style={{ 
-              backgroundColor: '#f8f9fa', 
-              padding: '20px', 
-              borderRadius: '8px', 
-              borderLeft: '5px solid #007bff',
-              lineHeight: '1.6',
-              marginBottom: '30px'
-            }}>
-              <h3 style={{ marginTop: 0 }}>Acerca de este álbum</h3>
-              <p style={{ textAlign: 'justify', fontSize: '0.95rem', color: '#333' }}>
+            <DescriptionBox>
+              <h3>Acerca de este álbum</h3>
+              <p>
                 {albumInfo.strDescriptionES || albumInfo.strDescriptionEN}
               </p>
-            </div>
+            </DescriptionBox>
           )}
-        </div>
+        </>
       )}
 
       <section>
         <h3>Lista de canciones</h3>
-        <ul style={{ listStyle: 'none', padding: 0 }}>
+        <TrackList>
           {tracks.map((track: any) => (
-            <li key={track.idTrack} style={{ 
-              padding: '12px', 
-              borderBottom: '1px solid #eee', 
-              display: 'flex', 
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}>
+            <TrackItem key={track.idTrack}>
               <span>{track.strTrack}</span>
-              <Link 
-                to={`/song/${track.idTrack}`} 
-                style={{ 
-                  color: '#007bff', 
-                  textDecoration: 'none', 
-                  fontSize: '0.9rem',
-                  fontWeight: '500'
-                }}
-              >
+              <StyledLink to={`/song/${track.idTrack}`}>
                 Ver detalle →
-              </Link>
-            </li>
+              </StyledLink>
+            </TrackItem>
           ))}
-        </ul>
+        </TrackList>
       </section>
-    </div>
+    </DetailsContainer>
   );
 };
