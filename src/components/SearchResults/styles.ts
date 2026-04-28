@@ -53,3 +53,19 @@ export const StyledDetailsLink = styled(Link)`
     color: ${({ theme }) => theme.colors.secondary};
   }
 `;
+
+export const AddButton = styled.button`
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  margin-bottom: 12px;
+  width: 100%;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+    color: black;
+  }
+`;

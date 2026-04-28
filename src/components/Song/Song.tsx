@@ -1,17 +1,34 @@
-// src/components/Song/Song.tsx
 import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { addSong, removeSong } from '../../redux/libraryActions';
 import { useFetchMusic } from '../../hooks/useFetchMusic.ts';
+import { 
+  SongContainer, 
+  BackButton, 
+  SongCard, 
+  SongImage, 
+  SongTitle, 
+  ArtistName, 
+  InfoText, 
+  DurationText,
+  AddButtonLarge,
+  RemoveButtonLarge,
+} from './styles.ts';
 
 export const Song = () => {
   const { trackId } = useParams();
+  const dispatch = useDispatch();
+  const savedSongs = useSelector((state: any) => state);
+  
   const url = `https://corsproxy.io/?https://theaudiodb.com/api/v1/json/2/track.php?h=${trackId}`;
   const { data, loading } = useFetchMusic(url);
 
   if (loading) return <p>Cargando información de la canción...</p>;
   
   const song = data?.track?.[0];
+  const isSaved = savedSongs.some((s: any) => s.idTrack === song?.idTrack);
+  const finalImage = song?.strTrackThumb || song?.strAlbumThumb || `https://www.theaudiodb.com/images/media/album/thumb/${song?.idAlbum}.jpg` || 'https://via.placeholder.com/300?text=Sin+Imagen';
 
-  // Función para convertir milisegundos a formato MM:SS
   const formatDuration = (ms: string) => {
     const totalSeconds = Math.floor(parseInt(ms) / 1000);
     const minutes = Math.floor(totalSeconds / 60);
@@ -19,37 +36,50 @@ export const Song = () => {
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
+  const handleToggleLibrary = () => {
+    if (isSaved) {
+      dispatch(removeSong(song.idTrack));
+    } else {
+      dispatch(addSong({
+        ...song,
+        strTrackThumb: finalImage
+      }));
+    }
+  };
+
   return (
-    <div style={{ padding: '40px', textAlign: 'center' }}>
-      <button onClick={() => window.history.back()} style={{ marginBottom: '20px', cursor: 'pointer' }}>
-        Regresar a la lista
-      </button>
+    <SongContainer>
+      <BackButton onClick={() => window.history.back()}>
+        ← Regresar a la lista
+      </BackButton>
 
       {song ? (
-        <div style={{ maxWidth: '500px', margin: '0 auto', border: '1px solid #ddd', padding: '20px', borderRadius: '12px' }}>
-          <img 
-            src={song.strTrackThumb || 'https://via.placeholder.com/300?text=Sin+Imagen'} 
+        <SongCard>
+          <SongImage 
+            src={song.strTrackThumb || song.strAlbumThumb || 'https://via.placeholder.com/300?text=Sin+Imagen'} 
             alt={song.strTrack} 
-            style={{ width: '100%', borderRadius: '8px', marginBottom: '20px' }} 
           />
-          <h1 style={{ margin: '10px 0' }}>{song.strTrack}</h1>
-          <h3 style={{ color: '#555' }}>{song.strArtist}</h3>
-          <p><strong>Álbum:</strong> {song.strAlbum}</p>
+          <SongTitle>{song.strTrack}</SongTitle>
+          <ArtistName>{song.strArtist}</ArtistName>
+          <InfoText><strong>Álbum:</strong> {song.strAlbum}</InfoText>
           
-          {/* Nueva sección: Duración */}
-          <p style={{ fontSize: '1.2rem', color: '#2ecc71', fontWeight: 'bold' }}>
+          <DurationText>
             Duración: {song.intDuration ? formatDuration(song.intDuration) : 'No disponible'}
-          </p>
+          </DurationText>
 
-          {song.strDescriptionEN && (
-            <p style={{ textAlign: 'justify', fontSize: '0.9rem', color: '#666', marginTop: '20px' }}>
-              {song.strDescriptionEN}
-            </p>
+          {isSaved ? (
+            <RemoveButtonLarge onClick={handleToggleLibrary}>
+              Eliminar de mi Biblioteca
+            </RemoveButtonLarge>
+          ) : (
+            <AddButtonLarge onClick={handleToggleLibrary}>
+              Agregar a mi Biblioteca
+            </AddButtonLarge>
           )}
-        </div>
+        </SongCard>
       ) : (
-        <p>No se encontró información detallada de la canción.</p>
+        <p>No se encontró información de la canción.</p>
       )}
-    </div>
+    </SongContainer>
   );
 };

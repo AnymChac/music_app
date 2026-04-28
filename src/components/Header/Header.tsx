@@ -7,7 +7,8 @@ import {
   Logo, 
   SearchForm, 
   SearchInput, 
-  SearchButton 
+  SearchButton,
+  StyledNavLink,
 } from './styles.ts';
 
 interface HeaderProps {
@@ -33,6 +34,15 @@ export const Header = ({ onSearch }: HeaderProps) => {
         <Logo onClick={() => navigate('/')}>
           MusicApp
         </Logo>
+        <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+          <StyledNavLink onClick={() => navigate('/my-library')}>
+            Mi Biblioteca
+          </StyledNavLink>
+          
+          <SearchForm onSubmit={handleSubmit}>
+            {/* ... input y button */}
+          </SearchForm>
+        </div>
         <SearchForm onSubmit={handleSubmit}>
           <SearchInput 
             type="text" 
