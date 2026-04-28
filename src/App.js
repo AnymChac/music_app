@@ -20,21 +20,19 @@ function App() {
 
   const { data, loading, error } = useFetchMusic(url);
 
-  return (
+ return (
     <ThemeProvider theme={theme}>
-      <GlobalStyle /> {/* Esto aplicará el fondo oscuro y fuente que definiste */}
+      <GlobalStyle />
       <Router>
         <Header onSearch={(artist) => setSearchTerm(artist)} />
         <Routes>
           <Route 
             path="/" 
-            element={
-              <Library 
-                albums={data?.album || []} 
-                title={searchTerm ? `Resultados para: ${searchTerm}` : "Busca tus artistas favoritos"} 
-              />
-            } 
+            element={<Library albums={data?.album || []} title={searchTerm} />} 
           />
+
+          <Route path="/my-library" element={<Library isPersonal={true} />} />
+          
           <Route path="/album/:id" element={<AlbumDetails />} />
           <Route path="/song/:trackId" element={<Song />} />
         </Routes>

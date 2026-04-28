@@ -25,7 +25,6 @@ export const InfoSection = styled.div`
   min-width: 300px;
 `;
 
-// PERSONALIZACIÓN CON PROPS
 export const YearTag = styled.span<{ isRecent: boolean }>`
   margin-left: 10px;
   padding: 2px 8px;
@@ -68,8 +67,39 @@ export const StyledLink = styled(Link)`
   text-decoration: none;
   font-weight: 500;
   display: inline-block;
-
+  padding: 10px;
+  margin: 0 0 10px 0;
+  border-radius: 10px;
   &:hover {
-    text-decoration: underline;
+    background-color: ${({ theme }) => theme.colors.primary};
+    color: white;
+    padding: 10px;
+  }
+`;
+
+export const ActionButtons = styled.div`
+  display: flex;
+  gap: 15px;
+  align-items: center;
+`;
+
+export const AddTrackButton = styled.button`
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: transform 0.1s ease;
+
+  &:active {
+    transform: scale(0.95);
+  }
+`;
+
+export const RemoveTrackButton = styled(AddTrackButton)`
+  background-color: #e74c3c; /* Rojo para indicar eliminación */
+  &:hover {
+    background-color: #c0392b;
   }
 `;
