@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
 
 export const ResultsGrid = styled.div`
@@ -67,5 +67,52 @@ export const AddButton = styled.button`
   &:hover {
     background-color: ${({ theme }) => theme.colors.secondary};
     color: black;
+  }
+`;
+
+const spin = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+
+export const LoadingSpinner = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  font-weight: bold;
+  color: ${({ theme }) => theme.colors.primary};
+
+  &:before {
+    content: '';
+    width: 40px;
+    height: 40px;
+    border: 5px solid ${({ theme }) => theme.colors.border};
+    border-top: 5px solid ${({ theme }) => theme.colors.primary};
+    border-radius: 50%;
+    animation: ${spin} 1s linear infinite;
+    margin-bottom: 10px;
+  }
+`;
+
+export const ErrorMessage = styled.div`
+  background-color: #fff5f5;
+  color: #c53030;
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid #feb2b2;
+  text-align: center;
+  margin: 2rem;
+
+  button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #c53030;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    &:hover { background-color: #9b2c2c; }
   }
 `;

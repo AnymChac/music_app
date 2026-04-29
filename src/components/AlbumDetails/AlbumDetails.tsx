@@ -1,8 +1,8 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { addSong, removeSong } from '../../redux/libraryActions';
+// PASO 6: Importar las acciones desde el Slice de Redux Toolkit
+import { addSong, removeSong } from '../../redux/slices/librarySlice'; 
 import { useFetchMusic } from '../../hooks/useFetchMusic.ts';
-// Importamos los componentes (asegúrate de agregar los que falten en styles.ts)
 import { 
   DetailsContainer, 
   AlbumHeader, 
@@ -21,8 +21,9 @@ import {
 export const AlbumDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-
-  const savedSongs = useSelector((state: any) => state);
+  
+  // PASO 6: Acceder al estado específico de 'library'
+  const savedSongs = useSelector((state: any) => state.library);
   
   const urlTracks = `https://corsproxy.io/?https://theaudiodb.com/api/v1/json/2/track.php?m=${id}`;
   const urlAlbum = `https://corsproxy.io/?https://theaudiodb.com/api/v1/json/2/album.php?m=${id}`;
@@ -34,15 +35,7 @@ export const AlbumDetails = () => {
 
   const albumInfo = dataAlbum?.album?.[0];
   const tracks = dataTracks?.track || [];
-  const albumThumb = dataAlbum?.album?.[0]?.strAlbumThumb;
-
-  const handleAddSong = (track: any) => {
-    dispatch(addSong({
-      ...track,
-      strTrackThumb: track.strTrackThumb || albumInfo?.strAlbumThumb
-    }));
-  };
-
+  const albumThumb = albumInfo?.strAlbumThumb;
 
   return (
     <DetailsContainer>
@@ -52,10 +45,9 @@ export const AlbumDetails = () => {
         <>
           <AlbumHeader>
             <AlbumImage 
-              src={albumInfo.strAlbumThumb} 
+              src={albumInfo.strAlbumThumb || 'https://via.placeholder.com/300?text=Sin+Portada'} 
               alt={albumInfo.strAlbum} 
             />
-            
             <InfoSection>
               <h1>{albumInfo.strAlbum}</h1>
               <h2>Artista: {albumInfo.strArtist}</h2>
@@ -73,9 +65,7 @@ export const AlbumDetails = () => {
           {(albumInfo.strDescriptionES || albumInfo.strDescriptionEN) && (
             <DescriptionBox>
               <h3>Acerca de este álbum</h3>
-              <p>
-                {albumInfo.strDescriptionES || albumInfo.strDescriptionEN}
-              </p>
+              <p>{albumInfo.strDescriptionES || albumInfo.strDescriptionEN}</p>
             </DescriptionBox>
           )}
         </>
@@ -84,29 +74,32 @@ export const AlbumDetails = () => {
       <section>
         <h3>Lista de canciones</h3>
         <TrackList>
-      {tracks.map((track: any) => {
-        // VERIFICACIÓN: ¿La canción ya está en Redux?
-        const isSaved = savedSongs.some((s: any) => s.idTrack === track.idTrack);
+          {tracks.map((track: any) => {
+            // Verificamos si la canción ya está en la biblioteca
+            const isSaved = savedSongs.some((s: any) => s.idTrack === track.idTrack);
 
-        return (
-          <TrackItem key={track.idTrack}>
-            <span>{track.strTrack}</span>
-            <ActionButtons>
-              {isSaved ? (
-                <RemoveTrackButton onClick={() => dispatch(removeSong(track.idTrack))}>
-                  - Eliminar
-                </RemoveTrackButton>
-              ) : (
-                <AddTrackButton onClick={() => dispatch(addSong({...track, strTrackThumb: track.strTrackThumb || albumThumb}))}>
-                  + Biblioteca
-                </AddTrackButton>
-              )}
-              <StyledLink to={`/song/${track.idTrack}`}>Ver detalle →</StyledLink>
-            </ActionButtons>
-          </TrackItem>
-        );
-      })}
-    </TrackList>
+            return (
+              <TrackItem key={track.idTrack}>
+                <span>{track.strTrack}</span>
+                <ActionButtons>
+                  {isSaved ? (
+                    <RemoveTrackButton onClick={() => dispatch(removeSong(track.idTrack))}>
+                      - Eliminar
+                    </RemoveTrackButton>
+                  ) : (
+                    <AddTrackButton onClick={() => dispatch(addSong({
+                      ...track,
+                      strTrackThumb: track.strTrackThumb || albumThumb
+                    }))}>
+                      + Biblioteca
+                    </AddTrackButton>
+                  )}
+                  <StyledLink to={`/song/${track.idTrack}`}>Ver detalle →</StyledLink>
+                </ActionButtons>
+              </TrackItem>
+            );
+          })}
+        </TrackList>
       </section>
     </DetailsContainer>
   );

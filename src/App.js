@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components'; //
 import { theme } from './theme'; // Usamos la exportación nombrada de tu archivo index.js del theme
 import { GlobalStyle } from './theme/GlobalStyles'; //
-
+import { SearchResults } from './components/SearchResults/SearchResults.tsx';
 // Importación de componentes
 import { Header } from './components/Header/Header.tsx';
 import { Library } from './components/Library/Library.tsx';
@@ -26,13 +26,8 @@ function App() {
       <Router>
         <Header onSearch={(artist) => setSearchTerm(artist)} />
         <Routes>
-          <Route 
-            path="/" 
-            element={<Library albums={data?.album || []} title={searchTerm} />} 
-          />
-
-          <Route path="/my-library" element={<Library isPersonal={true} />} />
-          
+          <Route path="/" element={<SearchResults />} />
+          <Route path="/my-library" element={<Library />} />
           <Route path="/album/:id" element={<AlbumDetails />} />
           <Route path="/song/:trackId" element={<Song />} />
         </Routes>

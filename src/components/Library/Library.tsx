@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { removeSong } from '../../redux/libraryActions';
-import { SearchResults } from '../SearchResults/SearchResults.tsx';
+// Importamos la acción desde el nuevo slice
+import { removeSong } from '../../redux/slices/librarySlice';
 import { 
   LibraryContainer, 
   LibraryHeader, 
@@ -13,50 +13,44 @@ import {
   EmptyMessage 
 } from './styles.ts';
 
-interface LibraryProps {
-  albums?: any[]; // Para la búsqueda
-  title?: string;
-  isPersonal?: boolean; // Para saber si es la de Redux
-}
-
-export const Library = ({ albums, title, isPersonal = false }: LibraryProps) => {
-  const myLibrary = useSelector((state: any) => state);
+export const Library = () => {
+  // PASO 8: Accedemos al estado específico de la biblioteca en el store
+  const myLibrary = useSelector((state: any) => state.library);
   const dispatch = useDispatch();
 
-  // Si es la biblioteca personal de Redux
-  if (isPersonal) {
-    return (
-      <LibraryContainer>
-        <LibraryHeader><h2>Mi Colección</h2></LibraryHeader>
-        {myLibrary.length > 0 ? (
-          <TrackList>
-            {myLibrary.map((song: any) => (
-              <TrackItem key={song.idTrack}>
-                <SongInfo>
-                  <strong>{song.strTrack}</strong>
-                  <span>{song.strArtist}</span>
-                </SongInfo>
-                <RemoveButton onClick={() => dispatch(removeSong(song.idTrack))}>
-                  Eliminar
-                </RemoveButton>
-              </TrackItem>
-            ))}
-          </TrackList>
-        ) : (
-          <EmptyState><EmptyMessage>No has guardado nada aún.</EmptyMessage></EmptyState>
-        )}
-      </LibraryContainer>
-    );
-  }
-
-  // Si es la vista de búsqueda normal
   return (
     <LibraryContainer>
-      <LibraryHeader><h2>{title || "Explorar"}</h2></LibraryHeader>
-      {albums && albums.length > 0 ? (
-        <SearchResults albums={albums} />
+      <LibraryHeader>
+        <h2>Mi Biblioteca Personal</h2>
+      </LibraryHeader>
+
+      {myLibrary.length > 0 ? (
+        <TrackList>
+          {myLibrary.map((song: any) => (
+            <TrackItem key={song.idTrack}>
+              {/* Mostramos imagen si existe (usando el fallback de la actividad anterior) */}
+              <img 
+                src={song.strTrackThumb} 
+                alt={song.strTrack} 
+                style={{ width: '50px', height: '50px', borderRadius: '4px', marginRight: '15px', objectFit: 'cover' }}
+              />
+              
+              <SongInfo>
+                <strong>{song.strTrack}</strong>
+                <span>{song.strArtist} • {song.strAlbum}</span>
+              </SongInfo>
+
+              {/* PASO 8: Despachamos removeSong desde el slice */}
+              <RemoveButton onClick={() => dispatch(removeSong(song.idTrack))}>
+                Eliminar
+              </RemoveButton>
+            </TrackItem>
+          ))}
+        </TrackList>
       ) : (
-        <EmptyState><EmptyMessage>Busca un artista para empezar.</EmptyMessage></EmptyState>
+        <EmptyState>
+          <EmptyMessage>No has guardado canciones aún.</EmptyMessage>
+        </EmptyState>
       )}
     </LibraryContainer>
   );
