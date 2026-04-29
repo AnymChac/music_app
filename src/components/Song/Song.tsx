@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { addSong, removeSong } from '../../redux/libraryActions';
+import { addSong, removeSong } from '../../redux/slices/librarySlice';
 import { useFetchMusic } from '../../hooks/useFetchMusic.ts';
 import { 
   SongContainer, 
@@ -12,13 +12,15 @@ import {
   InfoText, 
   DurationText,
   AddButtonLarge,
-  RemoveButtonLarge,
+  RemoveButtonLarge 
 } from './styles.ts';
 
 export const Song = () => {
   const { trackId } = useParams();
   const dispatch = useDispatch();
-  const savedSongs = useSelector((state: any) => state);
+  
+  // Accedemos a la biblioteca desde el slice
+  const savedSongs = useSelector((state: any) => state.library);
   
   const url = `https://corsproxy.io/?https://theaudiodb.com/api/v1/json/2/track.php?h=${trackId}`;
   const { data, loading } = useFetchMusic(url);
@@ -26,22 +28,21 @@ export const Song = () => {
   if (loading) return <p>Cargando información de la canción...</p>;
   
   const song = data?.track?.[0];
-  const isSaved = savedSongs.some((s: any) => s.idTrack === song?.idTrack);
-  const finalImage = song?.strTrackThumb || song?.strAlbumThumb || `https://www.theaudiodb.com/images/media/album/thumb/${song?.idAlbum}.jpg` || 'https://via.placeholder.com/300?text=Sin+Imagen';
 
-  const formatDuration = (ms: string) => {
-    const totalSeconds = Math.floor(parseInt(ms) / 1000);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-  };
+  // Verificamos si ya está en la biblioteca
+  const isSaved = savedSongs.some((s: any) => s.idTrack === song?.idTrack);
+
+  const finalImage = song?.strTrackThumb || song?.strAlbumThumb || `https://www.theaudiodb.com/images/media/album/thumb/${song?.idAlbum}.jpg` || 'https://via.placeholder.com/300?text=Sin+Imagen';
 
   const handleToggleLibrary = () => {
     if (isSaved) {
       dispatch(removeSong(song.idTrack));
     } else {
       dispatch(addSong({
-        ...song,
+        idTrack: song.idTrack,
+        strTrack: song.strTrack,
+        strArtist: song.strArtist,
+        strAlbum: song.strAlbum,
         strTrackThumb: finalImage
       }));
     }
@@ -49,36 +50,24 @@ export const Song = () => {
 
   return (
     <SongContainer>
-      <BackButton onClick={() => window.history.back()}>
-        ← Regresar a la lista
-      </BackButton>
-
-      {song ? (
+      <BackButton onClick={() => window.history.back()}>← Regresar</BackButton>
+      {song && (
         <SongCard>
-          <SongImage 
-            src={song.strTrackThumb || song.strAlbumThumb || 'https://via.placeholder.com/300?text=Sin+Imagen'} 
-            alt={song.strTrack} 
-          />
+          <SongImage src={finalImage} alt={song.strTrack} />
           <SongTitle>{song.strTrack}</SongTitle>
           <ArtistName>{song.strArtist}</ArtistName>
           <InfoText><strong>Álbum:</strong> {song.strAlbum}</InfoText>
           
-          <DurationText>
-            Duración: {song.intDuration ? formatDuration(song.intDuration) : 'No disponible'}
-          </DurationText>
-
           {isSaved ? (
             <RemoveButtonLarge onClick={handleToggleLibrary}>
-              Eliminar de mi Biblioteca
+              Eliminar de la Biblioteca
             </RemoveButtonLarge>
           ) : (
             <AddButtonLarge onClick={handleToggleLibrary}>
-              Agregar a mi Biblioteca
+              Agregar a la Biblioteca
             </AddButtonLarge>
           )}
         </SongCard>
-      ) : (
-        <p>No se encontró información de la canción.</p>
       )}
     </SongContainer>
   );
