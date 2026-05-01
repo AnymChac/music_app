@@ -21,7 +21,7 @@ export const Library = () => {
   return (
     <LibraryContainer>
       <LibraryHeader>
-        <h2>Mi Biblioteca Personal</h2>
+        <h2>Mis canciones</h2>
       </LibraryHeader>
 
       {myLibrary.length > 0 ? (
