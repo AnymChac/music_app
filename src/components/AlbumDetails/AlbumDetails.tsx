@@ -91,7 +91,7 @@ export const AlbumDetails = () => {
                       ...track,
                       strTrackThumb: track.strTrackThumb || albumThumb
                     }))}>
-                      + Biblioteca
+                      Biblioteca
                     </AddTrackButton>
                   )}
                   <StyledLink to={`/song/${track.idTrack}`}>Ver detalle →</StyledLink>
