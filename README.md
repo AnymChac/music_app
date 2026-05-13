@@ -44,5 +44,12 @@ El objetivo principal fue implementar una arquitectura robusta utilizando **Redu
 - Gracias al uso de Sass, la aplicación cuenta con una estructura de diseño limpia y responsive, facilitando el mantenimiento de variables de color y mixins para una experiencia visual coherente.
 
 ## 🤝 Conectemos
-- [LinkedIn](https://www.linkedin.com/in/carlos-ariel-espinosa-arroyo-999753260)
-- [Email](carlos.espinosaarroyo@gmail.com)
+
+<p align="left">
+  <a href="https://www.linkedin.com/in/carlos-ariel-espinosa-arroyo-999753260" target="_blank">
+    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
+  </a>
+  <a href="mailto:carlos.espinosaarroyo@gmail.com">
+    <img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Gmail" />
+  </a>
+</p>
